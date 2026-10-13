@@ -1,0 +1,23 @@
+{
+  "name": "giftflow-dashboard",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Staff print dashboard for GiftFlow: see gift orders, preview cards, print one or a whole day's batch.",
+  "type": "module",
+  "main": "server.js",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "user:add": "node scripts/user.js add",
+    "user:remove": "node scripts/user.js remove",
+    "user:list": "node scripts/user.js list",
+    "check": "node scripts/check.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-session": "^2.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2"
+  }
+}

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GiftFlow Dashboard</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand__mark" aria-hidden="true">✉</span> GiftFlow Dashboard</div>
+    <div class="topbar__shop" data-shop>—</div>
+    <div class="topbar__right">
+      <span class="pill" data-plan hidden></span>
+      <span class="muted" data-user></span>
+      <form method="post" action="/logout"><button class="btn btn--ghost btn--sm" type="submit">Log out</button></form>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="alert alert--error" data-error hidden></div>
+
+    <section class="stats" aria-label="Summary">
+      <button class="stat" data-goto="new"><span class="stat__n" data-count="new">–</span><span class="stat__l">To print</span></button>
+      <button class="stat" data-goto="review"><span class="stat__n" data-count="review">–</span><span class="stat__l">Needs approval</span></button>
+      <button class="stat" data-goto="held"><span class="stat__n" data-count="held">–</span><span class="stat__l">On hold</span></button>
+      <button class="stat" data-goto="printed"><span class="stat__n" data-count="printed">–</span><span class="stat__l">Printed, not packed</span></button>
+      <div class="stat stat--wide">
+        <span class="stat__l">Card size</span>
+        <span class="stat__v" data-card-size>–</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="toolbar">
+        <nav class="tabs" role="tablist" data-tabs>
+          <button role="tab" data-view="new">To print <span data-tab-count="new"></span></button>
+          <button role="tab" data-view="review">Needs approval <span data-tab-count="review"></span></button>
+          <button role="tab" data-view="held">On hold <span data-tab-count="held"></span></button>
+          <button role="tab" data-view="printed">Printed <span data-tab-count="printed"></span></button>
+          <button role="tab" data-view="packed">Packed <span data-tab-count="packed"></span></button>
+          <button role="tab" data-view="all">All <span data-tab-count="all"></span></button>
+        </nav>
+        <div class="toolbar__right">
+          <form class="search" data-search>
+            <input type="search" placeholder="Order, customer, recipient, message…" aria-label="Search" data-q>
+          </form>
+          <button class="btn btn--sm" data-refresh title="Refresh">↻ Refresh</button>
+          <button class="btn btn--primary btn--sm" data-print-all hidden>Print all</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="orders">
+          <thead>
+            <tr>
+              <th class="col-check"><input type="checkbox" data-check-all aria-label="Select all"></th>
+              <th>Card</th>
+              <th>Order</th>
+              <th>Recipient</th>
+              <th class="col-msg">Message</th>
+              <th>Status</th>
+              <th class="col-actions"></th>
+            </tr>
+          </thead>
+          <tbody data-rows></tbody>
+        </table>
+        <div class="empty" data-empty hidden>
+          <div class="empty__icon" aria-hidden="true">✓</div>
+          <p data-empty-text>Nothing waiting to print.</p>
+        </div>
+        <div class="loading" data-loading>Loading…</div>
+      </div>
+      <div class="more" data-more hidden><button class="btn btn--sm" data-load-more>Load more</button></div>
+    </section>
+  </main>
+
+  <!-- Selection bar -->
+  <div class="selbar" data-selbar hidden>
+    <span data-sel-count>0 selected</span>
+    <button class="btn btn--primary" data-act="print">Print</button>
+    <label class="check"><input type="checkbox" data-mark-printed checked> Mark as printed</label>
+    <span class="selbar__sep"></span>
+    <button class="btn" data-act="printed">Mark printed</button>
+    <button class="btn" data-act="packed">Mark packed</button>
+    <button class="btn" data-act="new">Back to “To print”</button>
+    <button class="btn btn--ok" data-act="approve" hidden>Approve image</button>
+    <button class="btn btn--danger" data-act="reject" hidden>Reject image</button>
+    <button class="btn btn--ghost" data-act="clear">Clear</button>
+  </div>
+
+  <!-- Card preview -->
+  <dialog class="modal" data-preview>
+    <form method="dialog" class="modal__close"><button aria-label="Close">×</button></form>
+    <div class="preview">
+      <div class="preview__card" data-pv-card></div>
+      <div class="preview__info">
+        <h2 data-pv-title></h2>
+        <p class="muted small" data-pv-meta></p>
+        <div class="alert alert--warn" data-pv-blocker hidden></div>
+        <dl class="kv">
+          <dt>To</dt><dd data-pv-to></dd>
+          <dt>From</dt><dd data-pv-from></dd>
+          <dt>Card</dt><dd data-pv-cardname></dd>
+          <dt>Status</dt><dd data-pv-status></dd>
+        </dl>
+        <div class="preview__actions" data-pv-actions></div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Print result -->
+  <dialog class="modal modal--wide" data-printer>
+    <form method="dialog" class="modal__close"><button aria-label="Close">×</button></form>
+    <div class="printer">
+      <div class="printer__head">
+        <h2 data-pr-title>Preparing cards…</h2>
+        <div class="printer__buttons">
+          <button class="btn btn--primary" data-pr-print disabled>Print</button>
+          <a class="btn" data-pr-download download="giftflow-cards.pdf" hidden>Download PDF</a>
+        </div>
+      </div>
+      <p class="muted small">Print at <strong>100% / actual size</strong> — not “fit to page” — so the card comes out at its real size and the crop marks line up.</p>
+      <div class="printer__frame">
+        <div class="printer__wait" data-pr-wait><span class="spinner"></span> Rendering print-ready PDF…</div>
+        <iframe title="Print preview" data-pr-frame hidden></iframe>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toasts" data-toasts aria-live="polite"></div>
+
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
