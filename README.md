@@ -47,6 +47,22 @@ cp .env.example .env
 Manage users with `npm run user:list` and `npm run user:remove -- anna`.
 Passwords are stored bcrypt-hashed in `data/users.json`.
 
+## Deploying on Vercel
+
+Vercel can't keep files, so `data/users.json` doesn't exist there. Put the
+logins in an environment variable instead:
+
+```bash
+npm run user:hash -- anna        # asks for a password, prints one entry
+```
+
+Set `DASHBOARD_USERS` in Vercel to that entry (comma-separate several users),
+plus `GIFTFLOW_URL`, `GIFTFLOW_API_KEY`, `SESSION_SECRET` and
+`SECURE_COOKIES=true`. To add or remove someone later, edit `DASHBOARD_USERS`
+and redeploy.
+
+Vercel caps a response at about 4.5 MB, so print very large batches in parts.
+
 ## Printing tips
 
 - Print at **100% / actual size**, not "fit to page", so cards come out at

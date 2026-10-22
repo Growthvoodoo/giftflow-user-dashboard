@@ -31,7 +31,7 @@ if (!GIFTFLOW_URL || !API_KEY) {
   console.warn("[dashboard] GIFTFLOW_URL and GIFTFLOW_API_KEY must be set in .env — see .env.example.");
 }
 if (!loadUsers().length) {
-  console.warn("[dashboard] No users yet. Add one with: npm run user:add -- <username>");
+  console.warn("[dashboard] No users yet. Add one with: npm run user:add -- <username> (or set DASHBOARD_USERS)");
 }
 
 const app = express();
@@ -198,7 +198,12 @@ app.post("/api/print", requireAjax, async (req, res) => {
 
 app.use(express.static(join(ROOT, "public"), { index: "index.html", maxAge: "1h" }));
 
-app.listen(PORT, () => {
-  console.log(`[dashboard] GiftFlow Dashboard on http://localhost:${PORT}`);
-  console.log(`[dashboard] connected to ${GIFTFLOW_URL || "(GIFTFLOW_URL not set)"}`);
-});
+// On Vercel the platform runs the exported app; everywhere else, listen.
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`[dashboard] GiftFlow Dashboard on http://localhost:${PORT}`);
+    console.log(`[dashboard] connected to ${GIFTFLOW_URL || "(GIFTFLOW_URL not set)"}`);
+  });
+}
+
+export default app;
